@@ -6,22 +6,29 @@
 package swing;
 
 import java.awt.Color;
-import javax.swing.JPanel;
+import java.sql.*;
+import javax.swing.*;
+
+import net.proteanit.sql.DbUtils;
 
 /**
  *
  * @author Admin
  */
 public class Home extends javax.swing.JFrame {
-
     /**
      * Creates new form Home
      */
+    
+    Connection connection=null;
+    
     public Home() {
         initComponents();
         setColor(btn_1); 
         ind_1.setOpaque(true);
         resetColor(new JPanel[]{btn_3}, new JPanel[]{ind_3});
+        
+        connection=sql_connector.dbConnector();
     }
 
     /**
@@ -47,16 +54,22 @@ public class Home extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        orderName = new javax.swing.JButton();
+        orderDesc = new javax.swing.JButton();
+        orderWarn = new javax.swing.JButton();
+        orderUrgen = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         btn_exit = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         button1 = new java.awt.Button();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        loadTable = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tareas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -215,36 +228,73 @@ public class Home extends javax.swing.JFrame {
 
         jPanel5.setBackground(new java.awt.Color(145, 71, 162));
 
-        jComboBox1.setBackground(new java.awt.Color(145, 71, 162));
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Urgencia e Importancia", "Fecha", "Nombre", "Descripción" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        orderName.setText("Nombre");
+        orderName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                orderNameActionPerformed(evt);
             }
         });
+
+        orderDesc.setText("Descripción");
+        orderDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                orderDescActionPerformed(evt);
+            }
+        });
+
+        orderWarn.setText("Importancia");
+        orderWarn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                orderWarnActionPerformed(evt);
+            }
+        });
+
+        orderUrgen.setText("Urgencia");
+        orderUrgen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                orderUrgenActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Ordenar Por");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jSeparator1))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap(55, Short.MAX_VALUE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(56, 56, 56)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
                 .addGap(40, 40, 40))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(orderName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(orderUrgen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(orderDesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(orderWarn)))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGap(7, 7, 7)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(orderName)
+                    .addComponent(orderDesc)
+                    .addComponent(orderWarn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(orderUrgen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel4.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 85, -1, 90));
@@ -275,6 +325,14 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setBackground(new java.awt.Color(145, 71, 162));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Urgencia e Importancia", "Fecha", "Nombre", "Descripción" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -284,14 +342,20 @@ public class Home extends javax.swing.JFrame {
                 .addGap(75, 75, 75)
                 .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(122, 122, 122)
+                .addGap(30, 30, 30)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(72, 72, 72)
                 .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, 300, 410));
@@ -304,6 +368,13 @@ public class Home extends javax.swing.JFrame {
         jLabel14.setForeground(new java.awt.Color(102, 102, 102));
         jLabel14.setText("Tareas");
 
+        loadTable.setText("Cargar Tareas");
+        loadTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadTableActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -311,50 +382,44 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(jLabel14)
-                .addContainerGap(586, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(loadTable, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(21, 21, 21)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadTable))
                 .addContainerGap())
         );
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-
-        jTable1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tareas.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        tareas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"12/12/2018", "Tarea de prueba", "Lorem ipsum dolor sit amet",  new Boolean(true),  new Boolean(true), null},
-                {"12/12/2018", "Tarea de prueba", "Lorem ipsum dolor sit amet", null,  new Boolean(true), null},
-                {"12/12/2018", "Tarea de prueba 3", "Lorem ipsum dolor sit amet",  new Boolean(true), null, null},
-                {"12/12/2018", "Tarea de prueba 4", "Lorem ipsum dolor sit amet", null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Fecha", "Tarea", "Descripción", "Urgente", "Importante", "Completar"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
-        });
-        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
-        jTable1.setRowHeight(22);
-        jScrollPane1.setViewportView(jTable1);
+        ));
+        tareas.setGridColor(new java.awt.Color(255, 255, 255));
+        tareas.setRowHeight(22);
+        jScrollPane2.setViewportView(tareas);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -362,7 +427,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -370,7 +435,7 @@ public class Home extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void btn_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_1MousePressed
         // TODO Add your handling code here:
         setColor(btn_1); 
@@ -420,6 +485,66 @@ public class Home extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void loadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadTableActionPerformed
+        try{
+            String sql="select nombre,descripcion,fecha,urgente,importante from registro";
+            PreparedStatement pst=connection.prepareStatement(sql);
+            ResultSet rs=pst.executeQuery();
+            tareas.setModel(DbUtils.resultSetToTableModel(rs));
+            
+        }catch(Exception e){
+         JOptionPane.showMessageDialog(null, "Error al cargar data");
+        }
+    }//GEN-LAST:event_loadTableActionPerformed
+
+    private void orderNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderNameActionPerformed
+        try{
+            String sql="select nombre,descripcion,fecha,urgente,importante from registro order by nombre";
+            PreparedStatement pst=connection.prepareStatement(sql);
+            ResultSet rs=pst.executeQuery();
+            tareas.setModel(DbUtils.resultSetToTableModel(rs));
+            
+        }catch(Exception e){
+         JOptionPane.showMessageDialog(null, "Error al cargar data");
+        }
+    }//GEN-LAST:event_orderNameActionPerformed
+
+    private void orderDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderDescActionPerformed
+        try{
+            String sql="select nombre,descripcion,fecha,urgente,importante from registro order by descripcion";
+            PreparedStatement pst=connection.prepareStatement(sql);
+            ResultSet rs=pst.executeQuery();
+            tareas.setModel(DbUtils.resultSetToTableModel(rs));
+            
+        }catch(Exception e){
+         JOptionPane.showMessageDialog(null, "Error al cargar data");
+        }
+    }//GEN-LAST:event_orderDescActionPerformed
+
+    private void orderWarnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderWarnActionPerformed
+        try{
+            String sql="select nombre,descripcion,fecha,urgente,importante from registro order by importante";
+            PreparedStatement pst=connection.prepareStatement(sql);
+            ResultSet rs=pst.executeQuery();
+            tareas.setModel(DbUtils.resultSetToTableModel(rs));
+            
+        }catch(Exception e){
+         JOptionPane.showMessageDialog(null, "Error al cargar data");
+        }
+    }//GEN-LAST:event_orderWarnActionPerformed
+
+    private void orderUrgenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderUrgenActionPerformed
+        try{
+            String sql="select nombre,descripcion,fecha,urgente,importante from registro order by urgente";
+            PreparedStatement pst=connection.prepareStatement(sql);
+            ResultSet rs=pst.executeQuery();
+            tareas.setModel(DbUtils.resultSetToTableModel(rs));
+            
+        }catch(Exception e){
+         JOptionPane.showMessageDialog(null, "Error al cargar data");
+        }
+    }//GEN-LAST:event_orderUrgenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -482,6 +607,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel ind_1;
     private javax.swing.JPanel ind_3;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
@@ -495,9 +621,15 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton loadTable;
+    private javax.swing.JButton orderDesc;
+    private javax.swing.JButton orderName;
+    private javax.swing.JButton orderUrgen;
+    private javax.swing.JButton orderWarn;
     private javax.swing.JPanel side_pane;
+    private javax.swing.JTable tareas;
     // End of variables declaration//GEN-END:variables
 }

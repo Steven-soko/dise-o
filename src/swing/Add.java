@@ -6,7 +6,9 @@
 package swing;
 
 import java.awt.Color;
-import javax.swing.JPanel;
+import java.sql.*;
+import javax.swing.*;
+import static org.sqlite.SQLiteJDBCLoader.initialize;
 
 /**
  *
@@ -17,11 +19,15 @@ public class Add extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
+    
+    Connection connection=null;
+    
     public Add() {
         initComponents();
         setColor(btn_3); 
         ind_3.setOpaque(true);
         resetColor(new JPanel[]{btn_1}, new JPanel[]{ind_1});
+        connection=sql_connector.dbConnector();
     }
 
     /**
@@ -48,17 +54,17 @@ public class Add extends javax.swing.JFrame {
         btn_exit = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        button2 = new java.awt.Button();
+        save = new java.awt.Button();
         button3 = new java.awt.Button();
         jSeparator2 = new javax.swing.JSeparator();
-        textField1 = new java.awt.TextField();
+        nombre_t = new java.awt.TextField();
         label1 = new java.awt.Label();
         label2 = new java.awt.Label();
-        textField4 = new java.awt.TextField();
-        textField3 = new java.awt.TextField();
+        fecha_t = new java.awt.TextField();
+        des_t = new java.awt.TextField();
         label3 = new java.awt.Label();
-        checkbox1 = new java.awt.Checkbox();
-        checkbox2 = new java.awt.Checkbox();
+        urg_t = new java.awt.Checkbox();
+        imp_t = new java.awt.Checkbox();
         label4 = new java.awt.Label();
         label5 = new java.awt.Label();
 
@@ -236,8 +242,13 @@ public class Add extends javax.swing.JFrame {
         jLabel12.setText("Usuario");
         jPanel4.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, -1, 30));
 
-        button2.setBackground(new java.awt.Color(0, 255, 51));
-        button2.setLabel("Guardar");
+        save.setBackground(new java.awt.Color(0, 255, 51));
+        save.setLabel("Guardar");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
 
         button3.setBackground(new java.awt.Color(255, 0, 0));
         button3.setForeground(new java.awt.Color(255, 255, 255));
@@ -252,7 +263,7 @@ public class Add extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -266,22 +277,22 @@ public class Add extends javax.swing.JFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(101, Short.MAX_VALUE))
         );
 
-        button2.getAccessibleContext().setAccessibleName("button2");
+        save.getAccessibleContext().setAccessibleName("button2");
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, 300, 420));
 
-        textField1.setText("12/03/2019");
-        textField1.addActionListener(new java.awt.event.ActionListener() {
+        nombre_t.setText("12/03/2019");
+        nombre_t.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textField1ActionPerformed(evt);
+                nombre_tActionPerformed(evt);
             }
         });
-        getContentPane().add(textField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 210, 180, 30));
+        getContentPane().add(nombre_t, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 210, 180, 30));
 
         label1.setAlignment(java.awt.Label.CENTER);
         label1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -295,21 +306,21 @@ public class Add extends javax.swing.JFrame {
         label2.setText("Nombre");
         getContentPane().add(label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 180, 180, -1));
 
-        textField4.setText("Ingrese nombre de tarea*");
-        textField4.addActionListener(new java.awt.event.ActionListener() {
+        fecha_t.setText("Ingrese nombre de tarea*");
+        fecha_t.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textField4ActionPerformed(evt);
+                fecha_tActionPerformed(evt);
             }
         });
-        getContentPane().add(textField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 210, 180, 30));
+        getContentPane().add(fecha_t, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 210, 180, 30));
 
-        textField3.setText("Ingrese nombre de tarea*");
-        textField3.addActionListener(new java.awt.event.ActionListener() {
+        des_t.setText("Ingrese nombre de tarea*");
+        des_t.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textField3ActionPerformed(evt);
+                des_tActionPerformed(evt);
             }
         });
-        getContentPane().add(textField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 330, 180, 30));
+        getContentPane().add(des_t, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 330, 180, 30));
 
         label3.setAlignment(java.awt.Label.CENTER);
         label3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -317,11 +328,11 @@ public class Add extends javax.swing.JFrame {
         label3.setText("Fecha");
         getContentPane().add(label3, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 180, 180, -1));
 
-        checkbox1.setLabel("Urgente");
-        getContentPane().add(checkbox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 330, -1, -1));
+        urg_t.setLabel("Urgente");
+        getContentPane().add(urg_t, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 330, -1, -1));
 
-        checkbox2.setLabel("Importante");
-        getContentPane().add(checkbox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 360, -1, -1));
+        imp_t.setLabel("Importante");
+        getContentPane().add(imp_t, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 360, -1, -1));
 
         label4.setAlignment(java.awt.Label.CENTER);
         label4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -376,17 +387,39 @@ public class Add extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_btn_exitMousePressed
 
-    private void textField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textField1ActionPerformed
+    private void nombre_tActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombre_tActionPerformed
         // TODO Add your handling code here:
-    }//GEN-LAST:event_textField1ActionPerformed
+    }//GEN-LAST:event_nombre_tActionPerformed
 
-    private void textField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textField4ActionPerformed
+    private void fecha_tActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fecha_tActionPerformed
         // TODO Add your handling code here:
-    }//GEN-LAST:event_textField4ActionPerformed
+    }//GEN-LAST:event_fecha_tActionPerformed
 
-    private void textField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textField3ActionPerformed
+    private void des_tActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_des_tActionPerformed
         // TODO Add your handling code here:
-    }//GEN-LAST:event_textField3ActionPerformed
+    }//GEN-LAST:event_des_tActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        try{
+            String sql ="Insert into registro (nombre,descripcion,fecha,urgente,importante) values(?,?,?,?,?)";
+            
+            PreparedStatement pst=connection.prepareStatement(sql);
+            pst.setString(1, nombre_t.getText());
+            pst.setString(2, des_t.getText());
+            pst.setString(3, fecha_t.getText());
+            pst.setBoolean(4, urg_t.getState());
+            pst.setBoolean(5, imp_t.getState());
+            
+            pst.execute();
+            
+            JOptionPane.showMessageDialog(null, "Información guardada con éxito");
+            
+            pst.close();
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_saveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -448,10 +481,10 @@ public class Add extends javax.swing.JFrame {
     private javax.swing.JPanel btn_1;
     private javax.swing.JPanel btn_3;
     private javax.swing.JLabel btn_exit;
-    private java.awt.Button button2;
     private java.awt.Button button3;
-    private java.awt.Checkbox checkbox1;
-    private java.awt.Checkbox checkbox2;
+    private java.awt.TextField des_t;
+    private java.awt.TextField fecha_t;
+    private java.awt.Checkbox imp_t;
     private javax.swing.JPanel ind_1;
     private javax.swing.JPanel ind_3;
     private javax.swing.JLabel jLabel10;
@@ -469,10 +502,10 @@ public class Add extends javax.swing.JFrame {
     private java.awt.Label label3;
     private java.awt.Label label4;
     private java.awt.Label label5;
+    private java.awt.TextField nombre_t;
+    private java.awt.Button save;
     private javax.swing.JPanel side_pane;
-    private java.awt.TextField textField1;
-    private java.awt.TextField textField3;
-    private java.awt.TextField textField4;
+    private java.awt.Checkbox urg_t;
     // End of variables declaration//GEN-END:variables
 
 }
